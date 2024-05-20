@@ -1,0 +1,14 @@
+[
+{
+  "model": "account.users_info",
+  "pk": 1,
+  "fields": {
+    "user_id": 1,
+    "user_age": 33,
+    "user_region": "gyeonggi",
+    "user_sex": "male",
+    "user_job": "unemployed",
+    "user_purpose": "investment"
+  }
+}
+]

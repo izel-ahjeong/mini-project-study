@@ -1,0 +1,26 @@
+<div>
+    {% if request.user.is_authenticated %}
+
+    <!-- 댓글 작성 칸 및 버튼 -->
+    <form action="{% url "news:news_comment_create" article.pk %}" method="POST">
+        {% csrf_token %}
+        <input type="hidden" name="article" value="{{ article.pk }}">
+        {{ comment_form.content }}
+        <button type="submit" class="btn btn-secondary btn-sm">댓글 작성</button>
+    </form>
+</div>
+
+<div>
+    <ul class="list-group">
+        <!-- 해당 기사 댓글 목록 보여주기 / 없으면 안내문 보여주기 -->
+        {% for comment in article.comment_set.all  %}
+        <li class="list-group-item"> {{ comment.content }} | <b>{{ comment.user  }}</b> </li>
+        {% empty %}
+        <li> 첫 댓글을 달아보세요 :D </li>   
+        {% endfor %}
+    </ul>
+</div>
+    {% else %}
+        <strong> 다른회원들의 댓글, 평점, 북마크 수를 보고 싶으면 회원가입을 해주세요:D </strong>
+{% endif %}
+

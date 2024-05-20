@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-body text-center">
+          <h1>내가 작성한 댓글 목록</h1>
+
+          <ul class="list-group list-group-flush">
+            {% for comment in user_comments %}
+              <li class="list-group-item">
+                <span class="float-start">[{{ comment.article.title }}] {{ comment.content }}</span>
+                <form method="post" action="{% url 'news:comment_delete' comment.id %}">
+                  {% csrf_token %}
+                  <button type="submit" class="btn btn-danger btn-sm float-end">삭제</button>
+                  <a href="{% url 'news:news_detail' comment.article.id %}" class="btn btn-primary btn-sm float-end">기사 보기</a>
+                </form>
+              </li>
+            {% empty %}
+              <li class="list-group-item">작성한 댓글이 없습니다.</li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

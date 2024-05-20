@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% for bookmark in user.bookmarks.all %}
+    <p>{{ bookmark.article.title }}</p>
+    <form action="{% url 'delete_bookmark' bookmark.id %}" method="post">
+        {% csrf_token %}
+        <button type="submit">북마크 삭제</button>
+    </form>
+{% endfor %}
+
+    
+{% endblock %}

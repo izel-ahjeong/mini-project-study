@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% for comment in comments %}
+    <div class="comment">
+        <p>{{ comment.text }}</p>
+        <form action="{% url 'delete_comment' comment.id %}" method="post">
+            {% csrf_token %}
+            <button type="submit">삭제</button>
+        </form>
+    </div>
+{% endfor %}
+
+    
+{% endblock %}

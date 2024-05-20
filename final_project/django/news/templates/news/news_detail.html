@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card text-center">
+                <div class="card-header">
+                    <h2>{{ article.title }}</h2>
+                </div>
+                
+                <div class="card-body">
+                    <div class="card-text"><strong>Date:</strong> {{ article.article_public_Date|slice:"5:10" }}</div>
+                    <div class="row-mt-5">
+                        <strong>Category:</strong> {{ article.category }}
+                    </div>
+                    
+                    <div class="row mt-5">
+                        Comments({{ article.comment_set.count}}) | Bookmarked({{ article.bookmark_set.count }})
+                    </div>
+                    
+                    {% if request.user.is_authenticated %}
+                        <p>
+                            <h3><strong>Abstract</strong></h3>
+                        </p>
+                        <div class="card-text mb-5">
+                            {{ article.abstract }}
+                        </div>
+                        <hr class="my-2">
+
+                        <p>
+                            <h3><strong>Content</strong></h3>
+                        </p>
+                        <div class="card-text mb-5">
+                            {{ article.content}}
+                        </div>
+                        <hr class="my-2">
+
+                        <div class="card-text mb-5">
+                            <a href="{{ article.content_url }}" target="_blank"> <stong>Want to see the original text? Click the url!</stong></a>
+                        </div>
+                    
+
+                    {% else %}
+                        <div class="card-text mb-5">
+                            {{ article.content }}
+                        </div>
+                        <hr class="my-2">
+
+                        <div class="card-text mb-5">
+                            <a href="{{ article.content_url }}" target="_blank"> 원문 url </a>
+                        </div>
+                    {% endif %}
+
+
+                    <!--  로그인 한 회원만 북마크, 댓글, 평점 기능 사용 가능-->
+                    {% if request.user.is_authenticated %}
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <!-- 북마크 기능 -->
+                                <!-- 만약 사용자가 인증되었다면, 북마크 버튼 나옴 -->
+                                <div>
+                                    <form action="{% url "news:news_bookmarked" article.pk %}" method="POST">
+                                        {% csrf_token %}
+                                        <button type="submit" name="bookmark_action">
+                                            {% if is_bookmark %}
+                                                ❤️ Unbookmark
+                                            {% else %}
+                                                🤍 Bookmark
+                                            {% endif %}
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div>
+                                    <!-- 평점 기능 -->
+                                    <form action="{% url "news:news_rating" article.pk %}" method="POST">
+                                        {% csrf_token %}
+                                        {{ rating_form }}
+                                        <button type="submit" class="btn btn-secondary btn-sm">평점 달기</button>
+                                    </form>
+                                </div>
+                            </div>
+
+                        </div>
+                    {% endif %}
+
+                        <div>
+                            <!-- 댓글 창 및 기능-->
+                            {% include "news/comment.html" %}
+                        </div>
+
+                </div>    
+            </div>
+        </div>
+    </div>
+
+
+{% endblock content %}
