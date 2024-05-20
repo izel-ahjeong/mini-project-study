@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% if request.user.is_authenticated %}
+<h1> {{ bookmark_articles.user }} </h1>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <!-- 추천 새로고침 -->
+                        <div>
+                            <form action="{% url 'account:mypage_recomm_and_bookmark' user_pk=user.pk %}" method="POST">
+                                {% csrf_token %}
+                                <button type="submit" name="recommendation"> 추천 새로고침 </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header"><h1>recommend article</h1></div>
+                    <div class="card-body">
+                        {% if recommend_articles_df %}
+                            <ul class="list-group">
+                                {% for recommend_article in recommend_articles_df %}
+                                    <li class="list-group-item">
+                                        <h5 class="card-title">
+                                            <strong> 
+                                                <a href="{% url 'news:news_detail' recommend_article.id %}" class="text-decoration-none text-dark">
+                                                    {{ recommend_article.title }}
+                                                </a>
+                                            </strong>
+                                        </h5>
+                                        <p class="card-text"><strong>Category:</strong> {{ recommend_article.category }}</p>
+                                        <p class="card-text"><strong>Published Date:</strong> {{ recommend_article.article_public_Date }}</p>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            <p> 아직 사용자를 파악할 수 없어요. 북마크를 20개 이상하시면, 개인 추천 해드립니다 :D </p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header"><h1>bookmark articles</h1></div>
+                    <div class="card-body">
+                        <ul class="list-group">
+                            {% for bookmark_article in bookmark_articles %}
+                            <li class="list-group-item">
+                              <a href="{% url 'news:news_detail' bookmark_article.article.id %}" class="text-decoration-none text-dark">({{ bookmark_article.article.category.name }}) {{ bookmark_article.article.title }}</a>
+                              <span class="float-end text-decoration-none text-dark"> {{ bookmark_article.article.article_public_Date|slice:"5:10"  }}</span>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endif %}
+
+{% endblock content %}

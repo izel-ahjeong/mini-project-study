@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title text-center">회원 정보</h5>
+                    <div class="mb-3">
+                        <p class="mb-0">나이: {{ user_info.user_age }}</p>
+                        <p class="mb-0">지역: {{ user_info.user_region }}</p>
+                        <p class="mb-0">성별: {{ user_info.user_sex }}</p>
+                        <p class="mb-0">직업: {{ user_info.user_job }}</p>
+                        <p class="mb-0">가입 목적: {{ user_info.user_purpose }}</p>
+                    </div>
+                    <div class="text-center mt-3">
+                        <a href="{% url 'account:update_user_info' user_pk=user_info.user_id_id %}" class="btn btn-secondary">수정하기</a>
+                        <form method="post" action="{% url 'account:delete_account' %}" onsubmit="return confirm('정말 탈퇴하시겠습니까?')">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger mt-3">회원 탈퇴</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
