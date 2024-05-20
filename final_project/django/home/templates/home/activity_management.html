@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-12 text-center">
+            <h1><strong>활동 관리</strong></h1>
+            {% if user.is_authenticated %}
+            <p>원하시는 버튼을 클릭하여 {{ user.username }}님이 작성하신 북마크 또는 댓글을 관리하세요:D</p>
+            {% endif %}
+            <div class="row justify-content-center align-items-center">
+                <div class="col-md-6 text-center">
+                    <a href="{% url 'news:bookmark_list' user_pk=user.pk %}" class="btn btn-outline-dark m-3">북마크 관리</a>
+                </div>
+                <div class="col-md-6 text-center">
+                    <a href="{% url 'news:comment_list' user_pk=user.pk %}" class="btn btn-outline-dark m-3">댓글 관리</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

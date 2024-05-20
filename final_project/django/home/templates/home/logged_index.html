@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+
+{% block page_title %}{{ category_name }}{% endblock page_title %}
+
+{% block content %}
+
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-12">
+            <h1 class="mb-4"><strong>카테고리 목록</strong></h1>
+            <div class="d-flex flex-wrap">
+                {% for category in categories %}
+                <a href="{% url 'home:category' category.id %}" class="btn btn-outline-dark m-2">{{ category.name }}</a>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-5">
+        <div class="col-md-12">
+            <h2 class="mb-4">{{ category_name }} News</h2>
+            <ul class="list-group">
+                {% for article in category_articles %}
+                <li class="list-group-item">
+                  <a href="{% url 'news:news_detail' article.id %}" class="text-decoration-none text-dark">{{ article.title }}</a>
+                  <span class="float-end text-decoration-none text-dark"> |{{ article.article_public_Date|slice:"5:10"  }}</span>
+                  <a class="float-end text-decoration-none text-dark">평점({{ article.average_rating|default:"-"|floatformat:2 }})| Bookmarked({{ article.bookmark_set.count }})</a>
+                </li>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="pagination justify-content-center mt-5 mb-5">
+  <ul class="pagination custom-pagination">
+    {% if category_articles.has_previous %}
+      <li class="page-item">
+        <a class="page-link" href="?page=1">&laquo; 처음</a>
+      </li>
+      <li class="page-item">
+        <a class="page-link" href="?page={{ category_articles.previous_page_number }}">이전</a>
+      </li>
+    {% endif %}
+
+    {% for num in custom_range %}
+      <li class="page-item {% if num == category_articles.number %}active{% endif %}">
+        <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+      </li>
+    {% endfor %}
+
+    {% if category_articles.has_next %}
+      <li class="page-item">
+        <a class="page-link" href="?page={{ category_articles.next_page_number }}">다음</a>
+      </li>
+      <li class="page-item">
+        <a class="page-link" href="?page={{ category_articles.paginator.num_pages }}">마지막 &raquo;</a>
+      </li>
+    {% endif %}
+  </ul>
+</div>
+
+<div class="container mt-5 mb-5 text-center">
+  <h2 class="mb-5"> <strong> 최근 60개 기사의 키워드입니다 :D </strong></h2>
+  <img src="{{ wordcloud_image }}" alt="Word Cloud">
+</div>
+
+<div class="container mt-5 mb-5">
+  <h1><strong>최신 기사 6개</strong></h1>
+
+  <div class="row row-cols-1 row-cols-md-2 g-4">
+    {% for article in latest_articles %}
+    <div class="col">
+      <div class="card h-100">
+        <div class="card-body btn btn-outline-dark">
+          <a href="{% url 'news:news_detail' article.id %}" style="text-decoration: none; color: black;">
+            <h5 class="card-title"><strong>{{ article.title }}</strong></h5>
+            <p class="card-text"><strong>Category:</strong> {{ article.category.name }}</p>
+            <p class="card-text"><strong>Date:</strong> {{ article.article_public_Date|slice:"5:10" }}</p>
+            <p class="card-text">{{ article.abstract }}</p>
+          </a>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+<div class="container mt-5">
+  <div class="row justify-content-center">
+  <h1 class="mb-4"><strong>연령대별 추천 기사</strong></h1>
+  <h3 class="mb-4"><strong>지난 일주일 기사중 연령대별로 좋아할 만한 기사를 추천했어요! 확인해보세요:D</strong></h3>
+  <div class="row">
+    {% for age_group in recommended_articles %}
+      <div class="col-md-2 mx-auto">
+        {% if age_group.user_age < 20 %}
+          <h2>10대</h2>
+        {% elif age_group.user_age < 30 %}
+          <h2>20대</h2>
+        {% elif age_group.user_age < 40 %}
+          <h2>30대</h2>
+        {% elif age_group.user_age < 50 %}
+          <h2>40대</h2>
+        {% else %}
+          <h2>50대</h2>
+        {% endif %}
+        <ul class="list-group">
+          {% for article in age_group.articles %}
+            <li class="list-group-item">
+              <a href="{% url 'news:news_detail' article.id %}" class="text-decoration-none text-dark">{{ article.title }}</a>
+              <p class="text-decoration-none text-dark">category: {{ article.category }}</p>
+              <span class="float-end text-decoration-none text-dark"> |{{ article.article_public_Date|slice:"5:10"  }}</span>
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+
+
+
+{% endblock content %}
